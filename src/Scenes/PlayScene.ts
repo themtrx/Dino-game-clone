@@ -1,20 +1,11 @@
 import { Player } from "../entities/Player"
 import { SpriteWithDynamicBody } from "../types"
+import { GameScene } from "./GameScene"
 
-class PlayScene extends Phaser.Scene {
-
+class PlayScene extends GameScene {
     ground: Phaser.GameObjects.TileSprite
     player: Player
     startTrigger: SpriteWithDynamicBody
-    isGameRunning: boolean = false
-
-    get gameWidth() {
-        return this.game.config.width as number
-    }
-
-    get gameHeight() {
-        return this.game.config.height as number
-    }
 
     constructor() {
         super("PlayScene")
