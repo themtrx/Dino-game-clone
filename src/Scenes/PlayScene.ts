@@ -6,6 +6,7 @@ class PlayScene extends Phaser.Scene {
     ground: Phaser.GameObjects.TileSprite
     player: Player
     startTrigger: SpriteWithDynamicBody
+    isGameRunning: boolean = false
 
     get gameWidth() {
         return this.game.config.width as number
@@ -44,6 +45,7 @@ class PlayScene extends Phaser.Scene {
                     if(this.ground.width >= this.gameWidth){
                         this.player.setVelocityX(0)
                         rollOutEvent.remove()
+                        this.isGameRunning = true
                     }
                 }
             })
