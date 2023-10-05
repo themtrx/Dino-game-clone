@@ -20,6 +20,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             .setBodySize(44, 92)
 
         this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this)
+        this.registerAnimations()
     }
 
     update() {
@@ -31,6 +32,26 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if(isSpaceJustDown && onFloor){
             this.setVelocityY(-1000)
         }
+
+        if(this.body.deltaAbsY() > 0){
+            this.anims.stop()
+            this.setTexture('dino-run', 0)
+        }else {
+            this.playRunAnimation()
+        }
+    }
+
+    playRunAnimation() {
+        this.play('run', true)
+    }
+
+    registerAnimations() {
+        this.anims.create({
+            key: 'run',
+            frames: this.anims.generateFrameNumbers('dino-run', { start: 2, end: 3 }),
+            frameRate: 10,
+            repeat: -1
+        })
     }
 
 }
