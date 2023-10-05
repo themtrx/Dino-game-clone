@@ -3,6 +3,10 @@ import Phaser from "phaser";
 import PreloadScene from "./Scenes/PreloadScene"
 import PlayScene from "./Scenes/PlayScene"
 
+export const PRELOAD_CONFIG = {
+  cacutsesCount: 6
+}
+
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   width: 1000,

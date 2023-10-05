@@ -1,11 +1,16 @@
+import { PRELOAD_CONFIG } from ".."
 import { Player } from "../entities/Player"
 import { SpriteWithDynamicBody } from "../types"
 import { GameScene } from "./GameScene"
 
 class PlayScene extends GameScene {
     ground: Phaser.GameObjects.TileSprite
+    obsticles: Phaser.GameObjects.Group
     player: Player
     startTrigger: SpriteWithDynamicBody
+
+    spawnInterval: number = 1500
+    spawnTime: number = 0
 
     constructor() {
         super("PlayScene")
@@ -14,6 +19,8 @@ class PlayScene extends GameScene {
     create() {
         this.createEnvironment()
         this.createPlayer()
+
+        this.obsticles = this.physics.add.group()
 
         this.startTrigger = this.physics.add.sprite(0, 10, null).setOrigin(0, 1).setAlpha(0)
 
@@ -44,6 +51,15 @@ class PlayScene extends GameScene {
         })
     }
 
+    update(time: number, delta: number) {
+        this.spawnTime += delta
+
+        if(this.spawnTime >= this.spawnInterval){
+            this.spawnTime = 0
+            this.spawnObsticle()
+        }
+    }
+
     createEnvironment() {
         this.ground = this.add.tileSprite(0, this.gameHeight, 88, 26, 'ground').setOrigin(0, 1)
     }
@@ -52,8 +68,13 @@ class PlayScene extends GameScene {
         this.player = new Player(this, 0, this.gameHeight)
     }
 
-    update(time: number, delta: number) {
+    spawnObsticle() {
+        const obsticleNumber = Math.floor(Math.random() * PRELOAD_CONFIG.cacutsesCount) + 1
+        const distance = Phaser.Math.Between(600, 900)
 
+        this.obsticles
+            .create(distance, this.gameHeight, `obsticle-${obsticleNumber}`)
+            .setOrigin(0, 1)
     }
     
 }
