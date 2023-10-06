@@ -22,6 +22,7 @@ class PlayScene extends GameScene {
     spawnInterval: number = 1500
     spawnTime: number = 0
     gameSpeed: number = 7
+    gameSpeedModifier: number = 1
 
     constructor() {
         super("PlayScene")
@@ -47,8 +48,12 @@ class PlayScene extends GameScene {
         this.scoreDeltaTime += delta
 
         if(this.scoreDeltaTime >= this.scoreInterval){
-            this.score += 1
+            this.score ++
             this.scoreDeltaTime = 0
+
+            if(this.score % 100 == 0 && this.score != 0){
+                this.gameSpeedModifier += 0.2
+            }
         }
 
         if(this.spawnTime >= this.spawnInterval){
@@ -56,7 +61,7 @@ class PlayScene extends GameScene {
             this.spawnObsticle()
         }
 
-        Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed)
+        Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed * this.gameSpeedModifier)
         Phaser.Actions.IncX(this.clouds.getChildren(), -0.7)
 
         const score = Array.from(String(this.score), Number)
@@ -79,7 +84,7 @@ class PlayScene extends GameScene {
         })
 
 
-        this.ground.tilePositionX += this.gameSpeed
+        this.ground.tilePositionX += (this.gameSpeed * this.gameSpeedModifier)
     }
 
     createEnvironment() {
@@ -207,7 +212,8 @@ class PlayScene extends GameScene {
             this.gameOverContainer.setAlpha(1)
             this.spawnTime = 0
             this.scoreDeltaTime = 0
-            this.gameSpeed = 7
+            this.score = 0
+            this.gameSpeedModifier = 1
         })
     }
     
