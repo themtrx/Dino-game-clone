@@ -11,7 +11,7 @@ class PlayScene extends GameScene {
 
     spawnInterval: number = 1500
     spawnTime: number = 0
-    obsticleSpeed: number = 7
+    gameSpeed: number = 7
 
     constructor() {
         super("PlayScene")
@@ -62,13 +62,15 @@ class PlayScene extends GameScene {
             this.spawnObsticle()
         }
 
-        Phaser.Actions.IncX(this.obsticles.getChildren(), -this.obsticleSpeed)
+        Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed)
 
         this.obsticles.getChildren().forEach((obsticle: SpriteWithDynamicBody) => {
             if(obsticle.getBounds().right < 0){
                 this.obsticles.remove(obsticle)
             }
         })
+
+        this.ground.tilePositionX += this.gameSpeed
     }
 
     createEnvironment() {
