@@ -116,7 +116,14 @@ class PlayScene extends GameScene {
 
     handleGameRestart() {
         this.restartText.on('pointerdown', () => {
+            this.physics.resume()
+            this.player.setVelocityY(0)
+
+            this.obsticles.clear(true, true)
             this.gameOverContainer.setAlpha(0)
+            this.anims.resumeAll()
+
+            this.isGameRunning = true
         })
     }
 
