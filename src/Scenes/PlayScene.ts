@@ -25,6 +25,11 @@ class PlayScene extends GameScene {
 
         this.startTrigger = this.physics.add.sprite(0, 10, null).setOrigin(0, 1).setAlpha(0)
 
+        this.physics.add.collider(this.player, this.obsticles, () => {
+            this.physics.pause()
+            this.isGameRunning = false
+        })
+
         this.physics.add.overlap(this.startTrigger, this.player, () => {
             if(this.startTrigger.y == 10){
                 this.startTrigger.body.reset(0, this.gameHeight)
@@ -85,9 +90,10 @@ class PlayScene extends GameScene {
         const obsticleNumber = Math.floor(Math.random() * PRELOAD_CONFIG.cacutsesCount) + 1
         const distance = Phaser.Math.Between(600, 1000)
 
-        this.obsticles
+        const obsticle = this.obsticles
             .create(distance, this.gameHeight, `obsticle-${obsticleNumber}`)
             .setOrigin(0, 1)
+            .setImmovable(true)
     }
     
 }
