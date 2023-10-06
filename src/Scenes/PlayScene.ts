@@ -10,9 +10,14 @@ class PlayScene extends GameScene {
     player: Player
     startTrigger: SpriteWithDynamicBody
 
+    scoreText: Phaser.GameObjects.Text
     gameOverContainer: Phaser.GameObjects.Container
     gameOverText: Phaser.GameObjects.Image
     restartText: Phaser.GameObjects.Image
+
+    score: number = 0
+    scoreInterval: number = 100
+    scoreDeltaTime: number = 0
 
     spawnInterval: number = 1500
     spawnTime: number = 0
@@ -28,6 +33,7 @@ class PlayScene extends GameScene {
         this.createObsticles()
         this.createGameOverContainer()
         this.createAnimations()
+        this.createScore()
 
         this.handleGameStart()
         this.handleObsticleCollisions()
@@ -38,6 +44,12 @@ class PlayScene extends GameScene {
         if(!this.isGameRunning) return
 
         this.spawnTime += delta
+        this.scoreDeltaTime += delta
+
+        if(this.scoreDeltaTime >= this.scoreInterval){
+            this.score += 1
+            this.scoreDeltaTime = 0
+        }
 
         if(this.spawnTime >= this.spawnInterval){
             this.spawnTime = 0
@@ -46,6 +58,13 @@ class PlayScene extends GameScene {
 
         Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed)
         Phaser.Actions.IncX(this.clouds.getChildren(), -0.7)
+
+        const score = Array.from(String(this.score), Number)
+        for (let i = 0; i < 5-String(this.score).length; i++) {
+            score.unshift(0)
+        }
+
+        this.scoreText.setText(score.join(''))
 
         this.obsticles.getChildren().forEach((obsticle: SpriteWithDynamicBody) => {
             if(obsticle.getBounds().right < 0){
@@ -102,6 +121,15 @@ class PlayScene extends GameScene {
         })
     }
 
+    createScore() {
+        this.scoreText = this.add.text(this.gameWidth, 0, '00000', {
+            fontSize: 30,
+            fontFamily: 'Arial',
+            color: '#535353',
+            resolution: 5
+        }).setOrigin(1, 0).setAlpha(0)
+    }
+
     spawnObsticle() {
         const obsitclesCount =  PRELOAD_CONFIG.cacutsesCount + PRELOAD_CONFIG.birdsCount
         const obsticleNumber = Math.floor(Math.random() * obsitclesCount) + 1
@@ -147,6 +175,7 @@ class PlayScene extends GameScene {
                         this.player.setVelocityX(0)
                         rollOutEvent.remove()
                         this.clouds.setAlpha(1)
+                        this.scoreText.setAlpha(1)
                         this.isGameRunning = true
                     }
                 }
@@ -177,6 +206,7 @@ class PlayScene extends GameScene {
             this.player.die()
             this.gameOverContainer.setAlpha(1)
             this.spawnTime = 0
+            this.scoreDeltaTime = 0
             this.gameSpeed = 7
         })
     }
