@@ -6,6 +6,7 @@ import { GameScene } from "./GameScene"
 class PlayScene extends GameScene {
     ground: Phaser.GameObjects.TileSprite
     obsticles: Phaser.GameObjects.Group
+    clouds: Phaser.GameObjects.Group
     player: Player
     startTrigger: SpriteWithDynamicBody
 
@@ -44,6 +45,7 @@ class PlayScene extends GameScene {
         }
 
         Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed)
+        Phaser.Actions.IncX(this.clouds.getChildren(), -0.7)
 
         this.obsticles.getChildren().forEach((obsticle: SpriteWithDynamicBody) => {
             if(obsticle.getBounds().right < 0){
@@ -51,11 +53,27 @@ class PlayScene extends GameScene {
             }
         })
 
+        this.clouds.getChildren().forEach((cloud: SpriteWithDynamicBody) => {
+            if(cloud.getBounds().right < 0){
+                cloud.x = this.gameWidth + 30
+            }
+        })
+
+
         this.ground.tilePositionX += this.gameSpeed
     }
 
     createEnvironment() {
         this.ground = this.add.tileSprite(0, this.gameHeight, 88, 26, 'ground').setOrigin(0, 1)
+        
+        this.clouds = this.add.group()
+        this.clouds = this.clouds.addMultiple([
+            this.add.image(this.gameWidth /2, 170, 'cloud'),
+            this.add.image(this.gameWidth - 80, 80, 'cloud'),
+            this.add.image(this.gameWidth /1.3, 100, 'cloud'),
+        ])
+
+        this.clouds.setAlpha(0)
     }
 
     createPlayer() {
@@ -128,6 +146,7 @@ class PlayScene extends GameScene {
                     if(this.ground.width >= this.gameWidth){
                         this.player.setVelocityX(0)
                         rollOutEvent.remove()
+                        this.clouds.setAlpha(1)
                         this.isGameRunning = true
                     }
                 }

@@ -13,6 +13,7 @@ class PreloadScene extends Phaser.Scene {
 
         this.load.image('game-over', 'game-over.png')
         this.load.image('restart', 'restart.png')
+        this.load.image('cloud', 'cloud.png')
 
         for (let i = 0; i < PRELOAD_CONFIG.cacutsesCount; i++) {
             const cactusNum = i + 1
