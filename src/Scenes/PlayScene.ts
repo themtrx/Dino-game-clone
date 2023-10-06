@@ -11,6 +11,7 @@ class PlayScene extends GameScene {
 
     spawnInterval: number = 1500
     spawnTime: number = 0
+    obsticleSpeed: number = 7
 
     constructor() {
         super("PlayScene")
@@ -52,12 +53,22 @@ class PlayScene extends GameScene {
     }
 
     update(time: number, delta: number) {
+        if(!this.isGameRunning) return
+
         this.spawnTime += delta
 
         if(this.spawnTime >= this.spawnInterval){
             this.spawnTime = 0
             this.spawnObsticle()
         }
+
+        Phaser.Actions.IncX(this.obsticles.getChildren(), -this.obsticleSpeed)
+
+        this.obsticles.getChildren().forEach((obsticle: SpriteWithDynamicBody) => {
+            if(obsticle.getBounds().right < 0){
+                this.obsticles.remove(obsticle)
+            }
+        })
     }
 
     createEnvironment() {
@@ -70,7 +81,7 @@ class PlayScene extends GameScene {
 
     spawnObsticle() {
         const obsticleNumber = Math.floor(Math.random() * PRELOAD_CONFIG.cacutsesCount) + 1
-        const distance = Phaser.Math.Between(600, 900)
+        const distance = Phaser.Math.Between(600, 1000)
 
         this.obsticles
             .create(distance, this.gameHeight, `obsticle-${obsticleNumber}`)
