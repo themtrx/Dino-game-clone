@@ -26,6 +26,7 @@ class PlayScene extends GameScene {
         this.createPlayer()
         this.createObsticles()
         this.createGameOverContainer()
+        this.createAnimations()
 
         this.handleGameStart()
         this.handleObsticleCollisions()
@@ -74,14 +75,35 @@ class PlayScene extends GameScene {
                 .setAlpha(0)
     }
 
-    spawnObsticle() {
-        const obsticleNumber = Math.floor(Math.random() * PRELOAD_CONFIG.cacutsesCount) + 1
-        const distance = Phaser.Math.Between(600, 1000)
+    createAnimations() {
+        this.anims.create({
+            key: 'enemy-bird-fly',
+            frames: this.anims.generateFrameNumbers('enemy-bird'),
+            frameRate: 6,
+            repeat: -1
+        })
+    }
 
-        const obsticle = this.obsticles
-            .create(distance, this.gameHeight, `obsticle-${obsticleNumber}`)
-            .setOrigin(0, 1)
-            .setImmovable(true)
+    spawnObsticle() {
+        const obsitclesCount =  PRELOAD_CONFIG.cacutsesCount + PRELOAD_CONFIG.birdsCount
+        const obsticleNumber = Math.floor(Math.random() * obsitclesCount) + 1
+
+        const distance = Phaser.Math.Between(150, 300)
+        let obsticle = null
+
+        if(obsticleNumber > PRELOAD_CONFIG.cacutsesCount){
+            const enemyPossibleHeight = [20, 70]
+            const enemyHeight = enemyPossibleHeight[Math.floor(Math.random() * enemyPossibleHeight.length) ]
+
+            obsticle = this.obsticles.create(this.gameWidth + distance, this.gameHeight - enemyHeight, `enemy-bird`)
+            obsticle.setBodySize(45, 30)
+
+            obsticle.play('enemy-bird-fly', true)
+        } else {
+            obsticle = this.obsticles.create(this.gameWidth + distance, this.gameHeight, `obsticle-${obsticleNumber}`)
+        }
+
+        obsticle.setOrigin(0, 1).setImmovable()
     }
 
     handleGameStart() {
@@ -131,6 +153,7 @@ class PlayScene extends GameScene {
         this.physics.add.collider(this.player, this.obsticles, () => {
             this.isGameRunning = false
             this.physics.pause()
+            this.anims.pauseAll()
 
             this.player.die()
             this.gameOverContainer.setAlpha(1)
