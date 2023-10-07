@@ -10,6 +10,7 @@ class PlayScene extends GameScene {
     player: Player
     startTrigger: SpriteWithDynamicBody
 
+    hightScoreText: Phaser.GameObjects.Text
     scoreText: Phaser.GameObjects.Text
     gameOverContainer: Phaser.GameObjects.Container
     gameOverText: Phaser.GameObjects.Image
@@ -133,6 +134,13 @@ class PlayScene extends GameScene {
             color: '#535353',
             resolution: 5
         }).setOrigin(1, 0).setAlpha(0)
+
+        this.hightScoreText = this.add.text((this.gameWidth - this.scoreText.width) - 20, 0, '00000', {
+            fontSize: 30,
+            fontFamily: 'Arial',
+            color: '#535353',
+            resolution: 5
+        }).setOrigin(1, 0).setAlpha(0)
     }
 
     spawnObsticle() {
@@ -210,6 +218,13 @@ class PlayScene extends GameScene {
 
             this.player.die()
             this.gameOverContainer.setAlpha(1)
+
+            const newHightScore = this.hightScoreText.text.substring(this.hightScoreText.text.length - 5)
+            const newScore = Number(this.scoreText.text) > Number(newHightScore) ? this.scoreText.text : newHightScore
+
+            this.hightScoreText.setText(`HI ${newScore}`)
+            this.hightScoreText.setAlpha(1)
+
             this.spawnTime = 0
             this.scoreDeltaTime = 0
             this.score = 0
